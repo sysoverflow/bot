@@ -22,3 +22,10 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+manifest {
+    attributes(
+            'Main-Class': 'sysoverflow.sysbot.Bootstrap',
+            'Implementation-Version': version
+    )
+}
