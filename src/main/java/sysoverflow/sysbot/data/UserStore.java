@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
@@ -34,14 +35,20 @@ public class UserStore extends ListenerAdapter {
         bot.getJda().addEventListener(this);
     }
 
+    // TODO convoluted logic
+
     @NotNull
     public Optional<Document> getUser(long snowflake) {
-        return Optional.ofNullable(collection.find(eq("_id", snowflake)).first());
+        var document = collection.find(eq("_id", snowflake)).first();
+        return Optional.of(Objects.requireNonNullElseGet(document, () -> createUser(snowflake)));
     }
 
-    public void createUser(long snowflake) {
-        if (getUser(snowflake).isPresent()) {
-            return;
+    @NotNull
+    public Document createUser(long snowflake) {
+        var existing = getUser(snowflake);
+
+        if (existing.isPresent()) {
+            return existing.get();
         }
 
         var document = new Document("_id", snowflake)
@@ -49,6 +56,7 @@ public class UserStore extends ListenerAdapter {
                 .append("xp", 0D);
 
         collection.insertOne(document);
+        return document;
     }
 
     public void incrementXp(long snowflake, double amount) {
