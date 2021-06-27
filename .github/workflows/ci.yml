@@ -15,7 +15,7 @@ jobs:
       - name: Install sshpass
         run: sudo apt install sshpass
       - name: Sanity check
-        run: ls -a
+        run: cd build ; ls -a ; cd libs ; ls -a ; cd ../..
       - name: Deploy artifact
         run: sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
