@@ -12,7 +12,11 @@ jobs:
           java-version: 16
       - name: Build sysbot
         run: ./gradlew build
-      - uses: actions/upload-artifact@v2
+      - name: Deploy
+        uses: appleboy/ssh-action@v0.1.4
         with:
-          name: sysbot
-          path: ./build/libs/sysbot-*.jar
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: ./deploy.sh
