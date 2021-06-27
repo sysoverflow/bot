@@ -15,6 +15,6 @@ jobs:
       - name: Install sshpass
         run: sudo apt install sshpass
       - name: Deploy artifact
-        run: sshpass -p "${{ secrets.PASSWORD }}" scp -r ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
+        run: sshpass -p "${{ secrets.PASSWORD }}" scp -r ./build/libs/sysbot-1.0-SNAPSHOT-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
         run: sshpass -p "${{ secrets.PASSWORD }}" ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
