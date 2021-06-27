@@ -15,11 +15,11 @@ jobs:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.PUBKEY }}
+          key: ${{ secrets.PRIVATEKEY }}
           known_hosts: 'placeholder'
       - name: Add known hosts
         run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
       - name: Deploy artifact
-        run: scp -i ~/.ssh/id_rsa.pub ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
+        run: rsync -avz ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
         run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
