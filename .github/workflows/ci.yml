@@ -13,10 +13,8 @@ jobs:
       - name: Build sysbot
         run: ./gradlew build
       - name: Deploy
-        uses: appleboy/ssh-action@v0.1.4
+        uses: JimCronqvist/action-ssh@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: ./deploy.sh
+          hosts: ${{ secrets.HOST }}
+          privateKey: ${{ secrets.PRIVATE_KEY }}
+          command: ./deploy.sh
