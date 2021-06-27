@@ -51,6 +51,11 @@ public class UserStore extends ListenerAdapter {
         collection.insertOne(document);
     }
 
+    public void incrementXp(long snowflake, double amount) {
+        var update = new Document("$inc", new Document("xp", amount));
+        collection.updateOne(eq("_id", snowflake), update);
+    }
+
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         ForkJoinPool.commonPool().submit(() -> createUser(event.getUser().getIdLong()));

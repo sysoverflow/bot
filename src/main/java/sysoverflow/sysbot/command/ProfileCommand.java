@@ -34,7 +34,9 @@ public class ProfileCommand implements Command {
                 .orElse(interaction.getMember());
 
         if (member == null) {
-            interaction.reply("The requested member is not in this server.").queue();
+            interaction.reply("The requested member is not in this server.")
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
@@ -44,14 +46,19 @@ public class ProfileCommand implements Command {
     private void execute0(@NotNull CommandInteraction interaction, @NotNull Member member) {
         bot.getUserStore().getUser(member.getIdLong()).ifPresentOrElse(document -> {
             var embed = new EmbedBuilder()
-                    .setColor(0xFFFFFF)
+                    .setColor(0x77bdff)
                     .setTitle(member.getEffectiveName() + "'s profile")
                     .setThumbnail(member.getUser().getEffectiveAvatarUrl())
                     .addField("XP", document.getDouble("xp") + "", true)
                     .addField("Coins", document.getInteger("coins") + "", true)
                     .build();
 
-            interaction.replyEmbeds(embed).queue();
-        }, () -> interaction.reply("The requested member does not have a profile.").queue());
+            interaction.replyEmbeds(embed)
+                    .setEphemeral(true)
+                    .queue();
+        }, () -> interaction.reply("The requested member does not have a profile.")
+                .setEphemeral(true)
+                .queue()
+        );
     }
 }

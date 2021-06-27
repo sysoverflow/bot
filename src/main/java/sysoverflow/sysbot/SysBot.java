@@ -13,6 +13,7 @@ import sysoverflow.sysbot.command.DebugCommand;
 import sysoverflow.sysbot.command.PingCommand;
 import sysoverflow.sysbot.command.ProfileCommand;
 import sysoverflow.sysbot.data.UserStore;
+import sysoverflow.sysbot.listener.MessageListener;
 
 import javax.security.auth.login.LoginException;
 import java.util.Properties;
@@ -27,7 +28,7 @@ public class SysBot extends ListenerAdapter {
     public SysBot(@NotNull Properties properties) throws LoginException {
         this.jda = JDABuilder.createDefault(properties.getProperty("botToken"))
                 .setActivity(Activity.competing("banana"))
-                .addEventListeners(this)
+                .addEventListeners(this, new MessageListener(this))
                 .build();
 
         this.commandHandler = new CommandHandler(this);
