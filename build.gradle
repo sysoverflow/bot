@@ -24,11 +24,13 @@ test {
     useJUnitPlatform()
 }
 
-manifest {
-    attributes(
-            'Main-Class': 'sysoverflow.sysbot.Bootstrap',
-            'Implementation-Version': version
-    )
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'sysoverflow.sysbot.Bootstrap',
+                'Implementation-Version': project.version
+        )
+    }
 }
 
 assemble.dependsOn shadowJar
