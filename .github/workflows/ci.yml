@@ -19,6 +19,12 @@ jobs:
           known_hosts: 'placeholder'
       - name: Add known hosts
         run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      - name: Sanity check
+        run: echo ${{ secrets.PRIVATEKEY }}
+      - name: Sanity check 2
+        run: echo ${{ secrets.HOST }}
+      - name: Sanity check 3
+        run: echo ${{ secrets.USER }}
       - name: Deploy artifact
         run: rsync -avz ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
