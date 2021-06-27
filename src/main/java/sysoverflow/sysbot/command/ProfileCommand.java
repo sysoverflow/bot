@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
 import sysoverflow.sysbot.util.NumberUtils;
 
-import java.text.NumberFormat;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 

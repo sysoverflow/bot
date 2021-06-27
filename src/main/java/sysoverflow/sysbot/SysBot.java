@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.command.CommandHandler;
 import sysoverflow.sysbot.command.DebugCommand;
+import sysoverflow.sysbot.command.InfoCommand;
 import sysoverflow.sysbot.command.PingCommand;
 import sysoverflow.sysbot.command.ProfileCommand;
 import sysoverflow.sysbot.data.UserStore;
@@ -62,6 +63,7 @@ public class SysBot extends ListenerAdapter {
         // Register commands
         commandHandler.register(
                 new DebugCommand(this),
+                new InfoCommand(this),
                 new PingCommand(this),
                 new ProfileCommand(this)
         );
