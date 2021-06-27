@@ -16,16 +16,13 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.PRIVATEKEY }}
+          name: id_rsa
           known_hosts: 'placeholder'
       - name: Add known hosts
         run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-      - name: Sanity check
-        run: printf ${{ secrets.PRIVATEKEY }}
-      - name: Sanity check 2
-        run: echo ${{ secrets.HOST }}
-      - name: Sanity check 3
-        run: echo ${{ secrets.USER }}
+      - name: Check key
+        run: cat ~/.ssh/id_rsa
       - name: Deploy artifact
-        run: rsync -avz ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
+        run: scp -i ~/.ssh/id_rsa ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
         run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
