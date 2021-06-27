@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Build
+        run: ./gradlew build
+      - name: Install sshpass
+        run: sudo apt install sshpass
+      - name: Deploy artifact
+        run: sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot-prod.jar
+      - name: Run remote deploy script
+        run: sshpass -p "${{ secrets.PASSWORD }}" ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd /root/sysbot-prod && ./deploy.sh"
