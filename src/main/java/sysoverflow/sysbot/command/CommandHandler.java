@@ -36,7 +36,9 @@ public class CommandHandler extends ListenerAdapter {
         var command = registeredCommands.get(event.getName().toLowerCase());
 
         if (command == null) {
-            event.reply("Unrecognized command.").queue();
+            event.reply("Unrecognized command.")
+                    .setEphemeral(true)
+                    .queue();
             return;
         }
 
