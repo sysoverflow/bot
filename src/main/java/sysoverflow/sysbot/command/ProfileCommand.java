@@ -1,6 +1,7 @@
 package sysoverflow.sysbot.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
 
 import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 
 public class ProfileCommand implements Command {
 
@@ -26,16 +28,20 @@ public class ProfileCommand implements Command {
     }
 
     @Override
-    public void execute(@NotNull CommandInteraction event) {
-        var member = Optional.ofNullable(event.getOption("member"))
+    public void execute(@NotNull CommandInteraction interaction) {
+        var member = Optional.ofNullable(interaction.getOption("member"))
                 .map(OptionMapping::getAsMember)
-                .orElse(event.getMember());
+                .orElse(interaction.getMember());
 
         if (member == null) {
-            event.reply("The requested member is not in this server.").queue();
+            interaction.reply("The requested member is not in this server.").queue();
             return;
         }
 
+        ForkJoinPool.commonPool().submit(() -> execute0(interaction, member));
+    }
+
+    private void execute0(@NotNull CommandInteraction interaction, @NotNull Member member) {
         bot.getUserStore().getUser(member.getIdLong()).ifPresentOrElse(document -> {
             var embed = new EmbedBuilder()
                     .setColor(0xFFFFFF)
@@ -45,7 +51,7 @@ public class ProfileCommand implements Command {
                     .addField("Coins", document.getInteger("coins") + "", true)
                     .build();
 
-            event.replyEmbeds(embed).queue();
-        }, () -> event.reply("The requested member does not have a profile.").queue());
+            interaction.replyEmbeds(embed).queue();
+        }, () -> interaction.reply("The requested member does not have a profile.").queue());
     }
 }

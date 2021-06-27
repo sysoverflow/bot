@@ -21,8 +21,8 @@ public class DebugCommand implements Command {
     }
 
     @Override
-    public void execute(@NotNull CommandInteraction event) {
-        bot.getUserStore().createUser(event.getUser().getIdLong());
-        event.reply("Created user profile!").queue();
+    public void execute(@NotNull CommandInteraction interaction) {
+        bot.getUserStore().createUser(interaction.getUser().getIdLong());
+        interaction.reply("Created user profile!").queue();
     }
 }

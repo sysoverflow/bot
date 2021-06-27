@@ -20,7 +20,7 @@ public class PingCommand implements Command {
     }
 
     @Override
-    public void execute(@NotNull CommandInteraction event) {
-        event.reply("Pong! My ping to Discord is " + bot.getJda().getGatewayPing() + " ms.").queue();
+    public void execute(@NotNull CommandInteraction interaction) {
+        interaction.reply("Pong! My ping to Discord is " + bot.getJda().getGatewayPing() + " ms.").queue();
     }
 }

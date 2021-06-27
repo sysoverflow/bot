@@ -12,5 +12,5 @@ public interface Command {
     @NotNull
     CommandData getData();
 
-    void execute(@NotNull CommandInteraction event);
+    void execute(@NotNull CommandInteraction interaction);
 }
