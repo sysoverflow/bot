@@ -5,8 +5,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.command.CommandHandler;
 import sysoverflow.sysbot.command.DebugCommand;
@@ -16,24 +14,26 @@ import sysoverflow.sysbot.command.ProfileCommand;
 import sysoverflow.sysbot.data.UserStore;
 import sysoverflow.sysbot.listener.MessageListener;
 
-import javax.security.auth.login.LoginException;
 import java.util.Properties;
 
-public class SysBot extends ListenerAdapter {
+public class SysBot {
 
     private final JDA jda;
     private final CommandHandler commandHandler;
     private final UserStore userStore;
-    private Guild primaryGuild;
+    private final Guild primaryGuild;
 
-    public SysBot(@NotNull Properties properties) throws LoginException {
+    public SysBot(@NotNull Properties properties) throws Exception {
         this.jda = JDABuilder.createDefault(properties.getProperty("botToken"))
                 .setActivity(Activity.competing("banana"))
-                .addEventListeners(this, new MessageListener(this))
-                .build();
-
+                .addEventListeners(new MessageListener(this))
+                .build()
+                .awaitReady();
         this.commandHandler = new CommandHandler(this);
         this.userStore = new UserStore(this, new ConnectionString(properties.getProperty("mongoUri")));
+        this.primaryGuild = jda.getGuildById(properties.getProperty("primaryGuild"));
+
+        onReady();
     }
 
     @NotNull
@@ -56,11 +56,7 @@ public class SysBot extends ListenerAdapter {
         return primaryGuild;
     }
 
-    @Override
-    public void onReady(@NotNull ReadyEvent event) {
-        primaryGuild = event.getJDA().getGuilds().get(0); // TODO a bit hacky
-
-        // Register commands
+    public void onReady() {
         commandHandler.register(
                 new DebugCommand(this),
                 new InfoCommand(this),
