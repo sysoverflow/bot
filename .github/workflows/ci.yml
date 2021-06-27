@@ -3,18 +3,23 @@ on: [ push ]
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
         uses: actions/setup-java@v1
         with:
           java-version: 16
-      - name: Build sysbot
+      - name: Build
         run: ./gradlew build
-      - name: Deploy
-        uses: JimCronqvist/action-ssh@master
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
         with:
-          hosts: ${{ secrets.HOST }}
-          privateKey: ${{ secrets.PRIVATE_KEY }}
-          command: ./deploy.sh
+          key: ${{ secrets.PRIVATEKEY }}
+          known_hosts: 'placeholder'
+      - name: Add known hosts
+        run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy artifact
+        run: scp ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
+      - name: Run remote deploy script
+        run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
