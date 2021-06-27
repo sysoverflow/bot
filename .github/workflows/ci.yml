@@ -17,4 +17,4 @@ jobs:
       - name: Deploy artifact
         run: sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
-        run: sshpass -p "${{ secrets.PASSWORD }}" ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
+        run: sshpass -p "${{ secrets.PASSWORD }}" ssh ${{ secrets.USER }}@${{ secrets.HOST }} "cd /root/sysbot-prod && ./deploy.sh"
