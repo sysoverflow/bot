@@ -15,6 +15,7 @@ import sysoverflow.sysbot.command.ProfileCommand;
 import sysoverflow.sysbot.data.UserStore;
 
 import javax.security.auth.login.LoginException;
+import java.util.Properties;
 
 public class SysBot extends ListenerAdapter {
 
@@ -23,14 +24,14 @@ public class SysBot extends ListenerAdapter {
     private final UserStore userStore;
     private Guild primaryGuild;
 
-    public SysBot(@NotNull String token, @NotNull ConnectionString connectionString) throws LoginException {
-        this.jda = JDABuilder.createDefault(token)
+    public SysBot(@NotNull Properties properties) throws LoginException {
+        this.jda = JDABuilder.createDefault(properties.getProperty("botToken"))
                 .setActivity(Activity.competing("banana"))
                 .addEventListeners(this)
                 .build();
 
         this.commandHandler = new CommandHandler(this);
-        this.userStore = new UserStore(this, connectionString);
+        this.userStore = new UserStore(this, new ConnectionString(properties.getProperty("mongoUri")));
     }
 
     @NotNull

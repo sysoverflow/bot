@@ -1,20 +1,21 @@
 package sysoverflow.sysbot;
 
-import com.mongodb.ConnectionString;
-
-import javax.security.auth.login.LoginException;
-import java.util.Arrays;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 public class Bootstrap {
 
-    public static void main(String[] args) throws LoginException {
-        Arrays.stream(args).forEach(System.out::println);
+    public static void main(String[] args) throws Exception {
+        var file = new File("sysbot.properties");
 
-        if (args.length < 2) {
-            System.out.println("Provide a bot token to bootstrap sysbot.");
+        if (!file.exists()) {
+            System.out.println("Failed to locate sysbot.properties.");
             return;
         }
 
-        new SysBot(args[0], new ConnectionString(args[1]));
+        var properties = new Properties();
+        properties.load(new FileInputStream(file));
+        new SysBot(properties);
     }
 }
