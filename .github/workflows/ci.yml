@@ -12,17 +12,9 @@ jobs:
           java-version: 16
       - name: Build
         run: ./gradlew build
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.PRIVATEKEY }}
-          name: id_rsa-root
-          known_hosts: 'placeholder'
-      - name: Add known hosts
-        run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-      - name: Check key
-        run: cat ~/.ssh/id_rsa-root
+      - name: Install sshpass
+        run: sudo apt install sshpass
       - name: Deploy artifact
-        run: scp -i ~/.ssh/id_rsa-root ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
+        run: sshpass -p "${{ secrets.PASSWORD }}" scp -r ./build/libs/sysbot-*-all.jar ${{ secrets.USER }}@${{ secrets.HOST }}:/root/sysbot-prod/sysbot.jar
       - name: Run remote deploy script
-        run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
+        run: sshpass -p "${{ secrets.PASSWORD }}" ssh ${{ secrets.USER }}@${{ secrets.HOST }} cd /root/sysbot-prod && ./deploy.sh
