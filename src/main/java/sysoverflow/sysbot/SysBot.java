@@ -11,6 +11,7 @@ import sysoverflow.sysbot.command.DebugCommand;
 import sysoverflow.sysbot.command.InfoCommand;
 import sysoverflow.sysbot.command.PingCommand;
 import sysoverflow.sysbot.command.ProfileCommand;
+import sysoverflow.sysbot.command.moderation.BanCommand;
 import sysoverflow.sysbot.data.UserStore;
 import sysoverflow.sysbot.listener.MessageListener;
 
@@ -61,7 +62,8 @@ public class SysBot {
                 new DebugCommand(this),
                 new InfoCommand(this),
                 new PingCommand(this),
-                new ProfileCommand(this)
+                new ProfileCommand(this),
+                new BanCommand(this)
         );
     }
 }
