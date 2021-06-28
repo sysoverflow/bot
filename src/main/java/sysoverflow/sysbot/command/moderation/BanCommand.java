@@ -30,6 +30,8 @@ public class BanCommand implements Command {
                     .setDescription("You do not have permission to ban members from this guild! If you believe this is in error please contact the guild owner.")
                     .build();
             interaction.replyEmbeds(embed).setEphemeral(true).queue();
+        } else {
+            interaction.reply("hi").setEphemeral(true).queue();
         }
 
     }
