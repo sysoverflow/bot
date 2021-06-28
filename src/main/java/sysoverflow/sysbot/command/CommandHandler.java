@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
+import sysoverflow.sysbot.command.moderation.BanCommand;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +21,12 @@ public class CommandHandler extends ListenerAdapter {
         this.registeredCommands = new HashMap<>();
 
         bot.getJda().addEventListener(this);
+        register(
+                new DebugCommand(bot),
+                new InfoCommand(bot),
+                new ProfileCommand(bot),
+                new BanCommand(bot)
+        );
     }
 
     public void register(@NotNull Command... commands) {

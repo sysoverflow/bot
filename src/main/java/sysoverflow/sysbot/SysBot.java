@@ -7,11 +7,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.command.CommandHandler;
-import sysoverflow.sysbot.command.DebugCommand;
-import sysoverflow.sysbot.command.InfoCommand;
-import sysoverflow.sysbot.command.PingCommand;
-import sysoverflow.sysbot.command.ProfileCommand;
-import sysoverflow.sysbot.command.moderation.BanCommand;
 import sysoverflow.sysbot.data.UserStore;
 import sysoverflow.sysbot.listener.MessageListener;
 
@@ -33,8 +28,6 @@ public class SysBot {
         this.commandHandler = new CommandHandler(this);
         this.userStore = new UserStore(this, new ConnectionString(properties.getProperty("mongoUri")));
         this.primaryGuild = jda.getGuildById(properties.getProperty("primaryGuild"));
-
-        onReady();
     }
 
     @NotNull
@@ -55,15 +48,5 @@ public class SysBot {
     @NotNull
     public Guild getPrimaryGuild() {
         return primaryGuild;
-    }
-
-    public void onReady() {
-        commandHandler.register(
-                new DebugCommand(this),
-                new InfoCommand(this),
-                new PingCommand(this),
-                new ProfileCommand(this),
-                new BanCommand(this)
-        );
     }
 }
