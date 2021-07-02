@@ -61,6 +61,6 @@ public class ProfileStorage extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        ForkJoinPool.commonPool().submit(() -> createProfile(event.getUser().getIdLong()));
+        ForkJoinPool.commonPool().submit(() -> getOrCreateProfile(event.getUser().getIdLong()));
     }
 }
