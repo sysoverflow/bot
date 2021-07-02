@@ -31,6 +31,6 @@ public class MessageListener extends ListenerAdapter {
         }
 
         cooldowns.logCooldown(snowflake);
-        ForkJoinPool.commonPool().submit(() -> bot.getUserStore().incrementXp(snowflake, 5.0D));
+        ForkJoinPool.commonPool().submit(() -> bot.getProfiles().incrementField(snowflake, "xp", 5.0D));
     }
 }

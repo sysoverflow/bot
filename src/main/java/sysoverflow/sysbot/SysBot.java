@@ -5,9 +5,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.command.CommandHandler;
-import sysoverflow.sysbot.data.UserStore;
+import sysoverflow.sysbot.profile.ProfileStorage;
 import sysoverflow.sysbot.listener.MessageListener;
 
 import java.util.Properties;
@@ -16,18 +17,19 @@ public class SysBot {
 
     private final JDA jda;
     private final CommandHandler commandHandler;
-    private final UserStore userStore;
+    private final ProfileStorage profileStorage;
     private final Guild primaryGuild;
 
     public SysBot(@NotNull Properties properties) throws Exception {
         this.jda = JDABuilder.createDefault(properties.getProperty("botToken"))
                 .setActivity(Activity.competing("banana"))
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .addEventListeners(new MessageListener(this))
                 .build()
                 .awaitReady();
-        this.commandHandler = new CommandHandler(this);
-        this.userStore = new UserStore(this, new ConnectionString(properties.getProperty("mongoUri")));
         this.primaryGuild = jda.getGuildById(properties.getProperty("primaryGuild"));
+        this.commandHandler = new CommandHandler(this);
+        this.profileStorage = new ProfileStorage(this, new ConnectionString(properties.getProperty("mongoUri")));
     }
 
     @NotNull
@@ -41,8 +43,8 @@ public class SysBot {
     }
 
     @NotNull
-    public UserStore getUserStore() {
-        return userStore;
+    public ProfileStorage getProfiles() {
+        return profileStorage;
     }
 
     @NotNull

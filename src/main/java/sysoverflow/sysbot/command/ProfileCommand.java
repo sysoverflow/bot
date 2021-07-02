@@ -45,7 +45,7 @@ public class ProfileCommand implements Command {
     }
 
     private void execute0(@NotNull CommandInteraction interaction, @NotNull Member member) {
-        bot.getUserStore().getUser(member.getIdLong()).ifPresentOrElse(document -> {
+        bot.getProfiles().getProfile(member.getIdLong()).ifPresentOrElse(document -> {
             var xp = document.getDouble("xp");
             var embed = new EmbedBuilder()
                     .setColor(0x67f5a0)

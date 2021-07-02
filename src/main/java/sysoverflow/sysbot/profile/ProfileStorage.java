@@ -1,4 +1,4 @@
-package sysoverflow.sysbot.data;
+package sysoverflow.sysbot.profile;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -10,18 +10,17 @@ import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class UserStore extends ListenerAdapter {
+public class ProfileStorage extends ListenerAdapter {
 
     private final SysBot bot;
     private final MongoCollection<Document> collection;
 
-    public UserStore(@NotNull SysBot bot, @NotNull ConnectionString connectionString) {
+    public ProfileStorage(@NotNull SysBot bot, @NotNull ConnectionString connectionString) {
         this.bot = bot;
         var settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
@@ -35,22 +34,18 @@ public class UserStore extends ListenerAdapter {
         bot.getJda().addEventListener(this);
     }
 
-    // TODO convoluted logic
-
     @NotNull
-    public Optional<Document> getUser(long snowflake) {
-        var document = collection.find(eq("_id", snowflake)).first();
-        return Optional.of(Objects.requireNonNullElseGet(document, () -> createUser(snowflake)));
+    public Optional<Document> getProfile(long snowflake) {
+        return Optional.ofNullable(collection.find(eq("_id", snowflake)).first());
     }
 
     @NotNull
-    public Document createUser(long snowflake) {
-        var existing = getUser(snowflake);
+    public Document getOrCreateProfile(long snowflake) {
+        return getProfile(snowflake).orElse(createProfile(snowflake));
+    }
 
-        if (existing.isPresent()) {
-            return existing.get();
-        }
-
+    @NotNull
+    private Document createProfile(long snowflake) {
         var document = new Document("_id", snowflake)
                 .append("coins", 0)
                 .append("xp", 0D);
@@ -59,13 +54,13 @@ public class UserStore extends ListenerAdapter {
         return document;
     }
 
-    public void incrementXp(long snowflake, double amount) {
-        var update = new Document("$inc", new Document("xp", amount));
+    public void incrementField(long snowflake, String field, double amount) {
+        var update = new Document("$inc", new Document(field, amount));
         collection.updateOne(eq("_id", snowflake), update);
     }
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        ForkJoinPool.commonPool().submit(() -> createUser(event.getUser().getIdLong()));
+        ForkJoinPool.commonPool().submit(() -> createProfile(event.getUser().getIdLong()));
     }
 }
