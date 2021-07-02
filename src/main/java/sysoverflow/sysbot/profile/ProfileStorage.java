@@ -35,6 +35,11 @@ public class ProfileStorage extends ListenerAdapter {
     }
 
     @NotNull
+    public MongoCollection<Document> getCollection() {
+        return collection;
+    }
+
+    @NotNull
     public Optional<Document> getProfile(long snowflake) {
         return Optional.ofNullable(collection.find(eq("_id", snowflake)).first());
     }
