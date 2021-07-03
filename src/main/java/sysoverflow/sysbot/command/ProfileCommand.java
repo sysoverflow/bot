@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.SysBot;
+import sysoverflow.sysbot.util.LevelingUtils;
 import sysoverflow.sysbot.util.NumberUtils;
 
 import java.util.Optional;
@@ -51,7 +52,7 @@ public class ProfileCommand implements Command {
                     .setColor(0x67f5a0)
                     .setDescription("🔖 " + member.getAsMention() + "'s member profile")
                     .setThumbnail(member.getUser().getEffectiveAvatarUrl())
-                    .addField("Level " + NumberUtils.format(getLevel(xp)), "That's " + xp + " XP", false)
+                    .addField("Level " + NumberUtils.format(LevelingUtils.getLevelFromXp(xp)), "That's " + xp + " XP", false)
                     .addField(NumberUtils.format(document.getInteger("coins")) + " coins", "An arbitrary currency", true)
                     .build();
 
@@ -62,9 +63,5 @@ public class ProfileCommand implements Command {
                 .setEphemeral(true)
                 .queue()
         );
-    }
-
-    private int getLevel(double xp) {
-        return (int) Math.sqrt(xp - 35);
     }
 }

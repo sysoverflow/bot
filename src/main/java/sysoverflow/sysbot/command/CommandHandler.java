@@ -23,6 +23,7 @@ public class CommandHandler extends ListenerAdapter {
         bot.getJda().addEventListener(this);
         register(
                 new InfoCommand(bot),
+                new LeaderboardCommand(bot),
                 new ProfileCommand(bot),
                 new BanCommand(bot)
         );
