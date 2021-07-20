@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 import sysoverflow.sysbot.command.CommandHandler;
+import sysoverflow.sysbot.listener.GuildMemberListener;
 import sysoverflow.sysbot.profile.ProfileStorage;
 import sysoverflow.sysbot.listener.MessageListener;
 
@@ -24,12 +25,14 @@ public class SysBot {
         this.jda = JDABuilder.createDefault(properties.getProperty("botToken"))
                 .setActivity(Activity.competing("banana"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                .addEventListeners(new MessageListener(this))
                 .build()
                 .awaitReady();
         this.primaryGuild = jda.getGuildById(properties.getProperty("primaryGuild"));
         this.commandHandler = new CommandHandler(this);
         this.profileStorage = new ProfileStorage(this, new ConnectionString(properties.getProperty("mongoUri")));
+
+        jda.addEventListener(new MessageListener(this));
+        jda.addEventListener(new GuildMemberListener(this));
     }
 
     @NotNull
